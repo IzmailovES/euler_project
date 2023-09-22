@@ -42,15 +42,54 @@ class Primes:
         self.pivot += 1
         return self.known_primes[self.pivot - 1]
 
+    def get_count_primes(self,num):
+        i = 0
+        while num:
+            yield self.get_next_prime()
+            num-=1
 
+def factorize(num):
+    if num == 1:
+        return [1]
+    ret = []
+    p = Primes()
+    d = p.get_next_prime()
+    while num != 1:
+        if not num%d:
+            ret.append(d)
+            num /= d
+        else:
+            d = p.get_next_prime()
+    return ret
 
-Primes.find_next_prime()
-print(Primes.known_primes)
-print(e_function_dummy(2850))
+def separate_dubles(l):
+    ret = [1 for _ in range(len(l))]
+    p = 0
+    el = l[p]
+    for i in l:
+        if i == el:
+            ret[p] *= el
+        else:
+            el = i
+            p += 1
+            ret[p] *= el
+    return [x for x in ret if x != 1]
+
+def e_function_clever(num):
+    ret = 1
+    l = separate_dubles(factorize(num))
+    for x in l:
+        if x in Primes.known_primes:
+            ret *= x-1
+        else:
+            ret *= e_function_dummy(x)
+    return ret
+
+m = 0
+for x in range(1,1000000):
+    print(x)
+    e = x/e_function_clever(x)
+    if e > m:
+        m = e
+print(m)
 exit(0)
-p = Primes()
-for i in range(20):
-    print(p.get_next_prime())
-
-for i in range(2,100):
-    print(i, e_function_dummy(i))
