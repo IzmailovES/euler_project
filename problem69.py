@@ -12,13 +12,26 @@ def nod(a,b):
 
 
 def e_function_dummy(num):
-    if num == 1:
-        return 1
-    count = 0
-    for i in range(1,num):
-        if nod(num,i) == 1:
-            count += 1
-    return count
+    cache = dict()
+    def inner(num):
+        if num == 1:
+            return 1
+        count = 0
+        for i in range(1,num):
+            if nod(num,i) == 1:
+                count += 1
+        return count
+
+    return cache.setdefault(num, inner(num))
+#    if in cache:
+#        return
+#        r = inner(num)
+#        cache[num] = r
+#        return r
+#    return cache[num]
+
+#def e_function_prime(num):
+
 
 class Primes:
     known_primes = [2,3,5,7,11]
@@ -73,7 +86,16 @@ def separate_dubles(l):
             el = i
             p += 1
             ret[p] *= el
-    return [x for x in ret if x != 1]
+    return ret #[x for x in ret if x != 1]
+
+def element_counter(l):
+    r = dict()
+    for i in l:
+        if i in r:
+            r[i] += 1
+        else:
+            r[i] = 1
+    return r
 
 def e_function_clever(num):
     ret = 1
@@ -85,11 +107,23 @@ def e_function_clever(num):
             ret *= e_function_dummy(x)
     return ret
 
+def e_function_improved(num):
+    ret = 1
+    d = element_counter(factorize(num))
+    for x,e in d.items():
+        n = x**e
+        ret *= n - n/x
+    return ret
+
+
 m = 0
-for x in range(1,1000000):
-    print(x)
-    e = x/e_function_clever(x)
+mx = 0
+for x in range(1000000,1,-1):
+    print('\r',x, end = '\t')
+    e = x/e_function_improved(x) #e_function_clever(x)
     if e > m:
         m = e
-print(m)
+        mx = x
+        print(mx,m)
+print(mx, m)
 exit(0)
