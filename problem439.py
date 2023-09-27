@@ -39,6 +39,15 @@ def dict_summ(d1,d2):
         ret[x] = d1.get(x,0) + y
     return ret
 
+def factorize_rec():
+    cache = dict()
+    def inner(num, pp = None):
+        pass
+        # если число простое - возвращаем
+        # если находим в кеше - возвращаем
+        # пытаемся поделить напростые числа по  очереди до корня из себя:
+            #  удалось поделить - делим на делитель сколько можем - возвращаем дикт сумм делителя + вызов себя от остатка c указанием следующего простого числа
+
 
 def d_old(num): ## sum of all divisors
     ret = 0
@@ -63,16 +72,18 @@ def s(n):
             ret += d(i) * d(j) if primes.nod(i,j) == 1 else d(i*j)
     return ret
 
-print(s(2*10**3))
-exit(0)
+#print(s(2*10**3))
+#exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
 #exit(0)
 f = factorize()
-#for i in range(10**10 - 1000000, 10**10):
 for i in range(10**6):
-    #print(i, f(i))
-    f(i)
+    print(f'{i:,}, {f(i)}')
+    #f(i)i
+for i in range(10**11 -10000, 10**11):
+    print(f'{i:,}, {f(i)}')
+
 print('done')
 print(primes.Primes()[0])
 #print(s(200))

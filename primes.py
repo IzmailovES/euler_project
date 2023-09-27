@@ -22,6 +22,10 @@ class Primes:
                 Primes._invent_prime()
         return Primes.known[i]
 
+    @classmethod
+    def get_set(cls):
+        return set(cls.known)
+
 def nod(a,b):
     if a < b:
         a,b = b,a
