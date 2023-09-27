@@ -2,21 +2,37 @@
 
 import primes
 
-def factorize(num):
-    if not num:
-        return {1:1}
-    acc = dict()
-    p = primes.Primes()
-    pp = 0
-    while num != 1:
-        prime = p[pp]
-        if not (num % prime):
-            acc[prime] = acc.get(prime, 0) + 1
-            num //= prime
-        else:
-            pp += 1
+def factorize():
+    cache = dict()
+    def inner(num):
+        if not num:
+            return {1:1}
+        acc = dict()
+        p = primes.Primes()
+        pp = 0
+        s_num = num
+        while num != 1:
+            if num in cache:
+                ret = dict_summ(cache[num], acc)
+                cache[s_num] = ret
+                #print(f'{s_num} fromcache')
+                return ret
+            prime = p[pp]
+            if not (num % prime):
+                acc[prime] = acc.get(prime, 0) + 1
+                num //= prime
+            else:
+                pp += 1
+        cache[s_num] = acc
+        #print(cache)
+        return acc
+    return inner
 
-    return acc
+def dict_summ(d1,d2):
+    ret = d1.copy()
+    for x,y in d2.items():
+        ret[x] = d1.get(x,0) + y
+    return ret
 
 
 def d_old(num): ## sum of all divisors
@@ -39,10 +55,12 @@ def s(n):
             ret += d(i*j)
     return ret
 
-
-
+#print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
+#exit(0)
+f = factorize()
 for i in range(10**5):
-    print(i,factorize(i))
+    f(i)
+print('done')
 print(primes.Primes()[0])
 #print(s(200))
 
