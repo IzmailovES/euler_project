@@ -39,13 +39,47 @@ def dict_summ(d1,d2):
         ret[x] = d1.get(x,0) + y
     return ret
 
-def factorize_rec():
+def factorize_rec(max_cachesize = 10*5):
     cache = dict()
-    def inner(num, pp = None):
-        pass
+    def update_cache(num, delimers):
+        if num < max_cachesize:
+            cache[num] = delimers
+
+    def inner(num, pp = 0):
+        if not num:
+            return dict()
+        s_num = num
         # если число простое - возвращаем
+        if num in primes.Primes.known_set:
+            return {num:1}
         # если находим в кеше - возвращаем
-        # пытаемся поделить напростые числа по  очереди до корня из себя:
+        if num in cache:
+            return cache[num]
+        # пытаемся поделить на простые числа по  очереди до корня из себя:
+        acc = dict()
+        lim = int(math.sqrt(num)) + 1
+        while num != 1:
+            prime = primes.Primes()[pp]
+            if prime > lim:
+                update_cache(s_num,{s_num:1})
+                return {s_num:1}
+            if not (num % prime):
+                acc[prime] = acc.get(prime,0) + 1
+                num //= prime
+            elif acc:
+                #print('call recursion', end = '')
+                acc = dict_summ(acc, inner(num, pp + 1))
+                update_cache(num, acc)
+                #print()
+                return acc
+            else:
+               # print(f'\r fail to divide by {prime}', end =  ' ')
+                pp += 1
+        update_cache(s_num, acc)
+        return acc
+    return inner
+f = factorize_rec()
+
             #  удалось поделить - делим на делитель сколько можем - возвращаем дикт сумм делителя + вызов себя от остатка c указанием следующего простого числа
 
 
@@ -72,17 +106,25 @@ def s(n):
             ret += d(i) * d(j) if primes.nod(i,j) == 1 else d(i*j)
     return ret
 
-#print(s(2*10**3))
+#print(s(10**3))
 #exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
 #exit(0)
-f = factorize()
-for i in range(10**6):
-    print(f'{i:,}, {f(i)}')
-    #f(i)i
+for i in range(3,10**6):
+    #print(f'{i:,}, {f(i)}')
+    f(i)
+exit(0)
 for i in range(10**11 -10000, 10**11):
-    print(f'{i:,}, {f(i)}')
+    a = f(i)
+    print(f'{i:,}: {a}')
+    acc = 1
+    for x,y in a.items():
+        acc *= x**y
+    if acc != i:
+        raise Exception()
+
+
 
 print('done')
 print(primes.Primes()[0])

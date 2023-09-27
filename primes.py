@@ -3,6 +3,7 @@ import math
 
 class Primes:
     known = [2,3,5,7]
+    known_set = {2,3,5,7}
     @classmethod
     def _invent_prime(cls):
         candidate = cls.known[-1] +2
@@ -14,6 +15,7 @@ class Primes:
                     break
             else:
                 cls.known.append(candidate)
+                cls.known_set.add(candidate)
                 break
 
     def __getitem__(self,i):
@@ -24,7 +26,7 @@ class Primes:
 
     @classmethod
     def get_set(cls):
-        return set(cls.known)
+        return cls.known_set
 
 def nod(a,b):
     if a < b:
