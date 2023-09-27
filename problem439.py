@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import primes
+import math
 
 def factorize():
     cache = dict()
@@ -11,20 +12,23 @@ def factorize():
         p = primes.Primes()
         pp = 0
         s_num = num
+        lim_num = int(math.sqrt(num)) + 1
         while num != 1:
             if num in cache:
                 ret = dict_summ(cache[num], acc)
                 cache[s_num] = ret
-                #print(f'{s_num} fromcache')
                 return ret
             prime = p[pp]
             if not (num % prime):
                 acc[prime] = acc.get(prime, 0) + 1
                 num //= prime
+            elif num == s_num and prime > lim_num:
+                acc = { s_num : 1 }
+                cache[s_num] = acc
+                return acc
             else:
                 pp += 1
         cache[s_num] = acc
-        #print(cache)
         return acc
     return inner
 
@@ -58,7 +62,9 @@ def s(n):
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
 #exit(0)
 f = factorize()
-for i in range(10**5):
+#for i in range(10**10 - 1000000, 10**10):
+for i in range(10**7):
+    #print(i, f(i))
     f(i)
 print('done')
 print(primes.Primes()[0])
