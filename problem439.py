@@ -31,6 +31,7 @@ def factorize():
         cache[s_num] = acc
         return acc
     return inner
+f = factorize()
 
 def dict_summ(d1,d2):
     ret = d1.copy()
@@ -47,23 +48,29 @@ def d_old(num): ## sum of all divisors
     return ret
 
 def d(num):
-    delimers = factorize(num)
-
+    ret = 1
+    delimers = f(num)
+    for x,y in delimers.items():
+        ret *= (x**(y+1) -1)//(x - 1)
+    return ret
 
 def s(n):
     cache = dict()
     ret = 0
     for i in range(1,n+1):
         for j in range(1, n+1):
-            #ret += cache.setdefault(i*j, d(i*j))
-            ret += d(i*j)
+            #ret += cache.setdefault(i*j, d(i*j)) if primes.nod(i,j) != 1 else (cache.setdefault(i, d(i)) * cache.setdefault(j,d(j)))
+            ret += d(i) * d(j) if primes.nod(i,j) == 1 else d(i*j)
     return ret
+
+print(s(2*10**3))
+exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
 #exit(0)
 f = factorize()
 #for i in range(10**10 - 1000000, 10**10):
-for i in range(10**7):
+for i in range(10**6):
     #print(i, f(i))
     f(i)
 print('done')

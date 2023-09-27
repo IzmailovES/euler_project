@@ -22,6 +22,17 @@ class Primes:
                 Primes._invent_prime()
         return Primes.known[i]
 
+def nod(a,b):
+    if a < b:
+        a,b = b,a
+    ret = b
+    while True:
+        d = a%b
+        if not d:
+            return b
+        a,b = b,d
+
+
 if __name__ == '__main__':
     p = Primes()
     print(p[10000])
