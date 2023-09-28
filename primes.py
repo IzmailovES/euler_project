@@ -41,4 +41,6 @@ def nod(a,b):
 
 if __name__ == '__main__':
     p = Primes()
+    
     print(p[10000])
+    print(Primes.get_set())

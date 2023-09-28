@@ -39,19 +39,25 @@ def dict_summ(d1,d2):
         ret[x] = d1.get(x,0) + y
     return ret
 
-def factorize_rec(max_cachesize = 10*5):
+def factorize_rec(max_cachesize = 50**2):
     cache = dict()
     def update_cache(num, delimers):
         if num < max_cachesize:
             cache[num] = delimers
+           # print(num,cache, sep = '\t')
 
     def inner(num, pp = 0):
         if not num:
             return dict()
+        if num == 1:
+            return {1:1}
         s_num = num
         # если число простое - возвращаем
-        if num in primes.Primes.known_set:
+        if num in primes.Primes.get_set():
             return {num:1}
+      #  else:
+       #     print(f'known set miss: {num} {primes.Primes.get_set()}')
+
         # если находим в кеше - возвращаем
         if num in cache:
             return cache[num]
@@ -59,17 +65,18 @@ def factorize_rec(max_cachesize = 10*5):
         acc = dict()
         lim = int(math.sqrt(num)) + 1
         while num != 1:
+            #print(num, acc)
             prime = primes.Primes()[pp]
-            if prime > lim:
-                update_cache(s_num,{s_num:1})
+            if prime > lim and s_num == num:
+                #update_cache(s_num,{s_num:1})
                 return {s_num:1}
             if not (num % prime):
                 acc[prime] = acc.get(prime,0) + 1
                 num //= prime
             elif acc:
                 #print('call recursion', end = '')
-                acc = dict_summ(acc, inner(num, pp + 1))
-                update_cache(num, acc)
+                acc = dict_summ(acc, inner(num, pp + 1 ))
+                update_cache(s_num, acc)
                 #print()
                 return acc
             else:
@@ -91,23 +98,58 @@ def d_old(num): ## sum of all divisors
     return ret
 
 def d(num):
+    if num == 1:
+        return 1
     ret = 1
     delimers = f(num)
     for x,y in delimers.items():
         ret *= (x**(y+1) -1)//(x - 1)
+    #print(num, ret, delimers)
     return ret
+
+def multi_d(dct):
+    # all items in dct is prime:a
+    ret = 1
+    for x,y in dct.items():
+        try:
+            ret *= (x**(y+1) -1)//(x - 1)
+        except ZeroDivisionError:
+            ret *= 1
+    return ret
+
 
 def s(n):
     cache = dict()
     ret = 0
     for i in range(1,n+1):
         for j in range(1, n+1):
-            #ret += cache.setdefault(i*j, d(i*j)) if primes.nod(i,j) != 1 else (cache.setdefault(i, d(i)) * cache.setdefault(j,d(j)))
-            ret += d(i) * d(j) if primes.nod(i,j) == 1 else d(i*j)
+            ret += multi_d(dict_summ(f(i),f(j)))
+            #print(ret)
     return ret
 
-#print(s(10**3))
+def factor_exam(num,d):
+    ret = 1
+    for x,y in d.items():
+        ret *= x**y
+    if ret != num:
+        return False
+    return True
+#print(primes.Primes()[100])
+#print(primes.Primes.get_set())
+#n = 1
+#while factor_exam(n,f(n)):
+#    n+= 1
+#    print(n, f(n))
 #exit(0)
+prime_lim = 10**3
+print(f'inventing primes until {prime_lim}')
+n = 0
+while primes.Primes()[n] < prime_lim:
+    n+=1
+print('go calculte!')
+
+print(s(1000))
+exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
 #exit(0)
