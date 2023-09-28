@@ -103,12 +103,12 @@ def d(num):
     ret = 1
     delimers = f(num)
     for x,y in delimers.items():
-        ret *= (x**(y+1) -1)//(x - 1)
+        ret *= ((x**(y+1) -1)//(x - 1))
     #print(num, ret, delimers)
     return ret
 
 def multi_d(dct):
-    # all items in dct is prime:a
+    # all items in dct is prime:power
     ret = 1
     for x,y in dct.items():
         try:
@@ -122,10 +122,19 @@ def s(n):
     cache = dict()
     ret = 0
     for i in range(1,n+1):
-        for j in range(1, n+1):
-            ret += multi_d(dict_summ(f(i),f(j)))
-            #print(ret)
+        d1 = f(i)
+        ret += multi_d(dict_summ(f(i),f(i)))
+    for i in range(1, n):
+        for j in range(i+1, n+1):
+            d1 = dict_summ(f(i), f(j))
+            ret += multi_d(d1) << 1
     return ret
+#
+#        for j in range(1, n+1):
+#            ret += multi_d(dict_summ(f(i),f(j)))
+#            ret%=10**3
+            #print(ret)
+#    return ret
 
 def factor_exam(num,d):
     ret = 1
@@ -148,7 +157,7 @@ while primes.Primes()[n] < prime_lim:
     n+=1
 print('go calculte!')
 
-print(s(1000))
+print(s(2000))
 exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
