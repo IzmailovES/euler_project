@@ -2,6 +2,8 @@
 
 import primes
 import math
+import time
+import sys
 
 def factorize():
     cache = dict()
@@ -134,6 +136,8 @@ def s(n):
             #d1 = f(i)
             d2 = f(j)
             ret += (multi_d(dict_summ(d1,d2))) << 1 #(0 if i == j else 1)
+        if not i%1000:
+            print(i,time.process_time(), ret)
     return ret
 
 def factor_exam(num,d):
@@ -143,22 +147,18 @@ def factor_exam(num,d):
     if ret != num:
         return False
     return True
-#print(primes.Primes()[100])
-#print(primes.Primes.get_set())
-#n = 1
-#while factor_exam(n,f(n)):
-#    n+= 1
-#    print(n, f(n))
-#exit(0)
-prime_lim = 10**3
-print(f'inventing primes until {prime_lim}')
-n = 0
-while primes.Primes()[n] < prime_lim:
-    n+=1
-print('go calculte!')
 
-print(s(5000))
-exit(0)
+if __name__ == '__main__':
+    num = int(sys.argv[1])
+    prime_lim = int(math.sqrt(num)) + 1
+    print(f'inventing primes until {prime_lim}')
+    n = 0
+    while primes.Primes()[n] < prime_lim:
+        n+=1
+    print('go calculte!')
+
+    print(s(num))
+    exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
 #exit(0)
