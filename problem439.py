@@ -41,6 +41,7 @@ def dict_summ(d1,d2):
 
 def factorize_rec(max_cachesize = 50**2):
     cache = dict()
+  #  i = 0
     def update_cache(num, delimers):
         if num < max_cachesize:
             cache[num] = delimers
@@ -60,7 +61,12 @@ def factorize_rec(max_cachesize = 50**2):
 
         # если находим в кеше - возвращаем
         if num in cache:
+   #         print('cache success')
             return cache[num]
+   #     nonlocal i
+    #    print(f'cache miss {i}')
+    #    i+=1
+
         # пытаемся поделить на простые числа по  очереди до корня из себя:
         acc = dict()
         lim = int(math.sqrt(num)) + 1
@@ -114,7 +120,7 @@ def multi_d(dct):
         try:
             ret *= (x**(y+1) -1)//(x - 1)
         except ZeroDivisionError:
-            ret *= 1
+            pass
     return ret
 
 
@@ -123,18 +129,12 @@ def s(n):
     ret = 0
     for i in range(1,n+1):
         d1 = f(i)
-        ret += multi_d(dict_summ(f(i),f(i)))
-    for i in range(1, n):
-        for j in range(i+1, n+1):
-            d1 = dict_summ(f(i), f(j))
-            ret += multi_d(d1) << 1
+        ret += multi_d(dict_summ(d1,d1))
+        for j in range(i -1 , 0, -1 ):
+            #d1 = f(i)
+            d2 = f(j)
+            ret += (multi_d(dict_summ(d1,d2))) << 1 #(0 if i == j else 1)
     return ret
-#
-#        for j in range(1, n+1):
-#            ret += multi_d(dict_summ(f(i),f(j)))
-#            ret%=10**3
-            #print(ret)
-#    return ret
 
 def factor_exam(num,d):
     ret = 1
@@ -157,7 +157,7 @@ while primes.Primes()[n] < prime_lim:
     n+=1
 print('go calculte!')
 
-print(s(2000))
+print(s(5000))
 exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
