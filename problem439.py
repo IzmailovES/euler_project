@@ -53,7 +53,7 @@ def factorize_rec(max_cachesize = 50**2):
         if not num:
             return dict()
         if num == 1:
-            return {1:1}
+            return dict()
         s_num = num
         # если число простое - возвращаем
         if num in primes.Primes.get_set():
@@ -119,6 +119,11 @@ def multi_d(dct):
     # all items in dct is prime:power
     ret = 1
     for x,y in dct.items():
+        #r1 = 0
+        #for k in range(y+1):
+        #    r1 += x**k
+        #ret *=r1
+
         try:
             ret *= (x**(y+1) -1)//(x - 1)
         except ZeroDivisionError:
@@ -128,17 +133,24 @@ def multi_d(dct):
 
 def s(n):
     cache = dict()
+    def get_f(num):
+        return cache.setdefault(num, f(num))
     ret = 0
+    ret1 = 0
+    ret2 = 0
     for i in range(1,n+1):
         d1 = f(i)
-        ret += multi_d(dict_summ(d1,d1))
-        for j in range(i -1 , 0, -1 ):
-            #d1 = f(i)
+        dd1 = multi_d(d1)
+        ret1 += multi_d(dict_summ(d1,d1))
+        for j in range(1,i ):
             d2 = f(j)
-            ret += (multi_d(dict_summ(d1,d2))) << 1 #(0 if i == j else 1)
+            if primes.nod(i,j) == 1:
+                ret2 += (dd1*multi_d(d2))
+            else:
+                ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
         if not i%1000:
             print(i,time.process_time(), ret)
-    return ret
+    return ret1 + (ret2 << 1)
 
 def factor_exam(num,d):
     ret = 1
@@ -155,8 +167,14 @@ if __name__ == '__main__':
     n = 0
     while primes.Primes()[n] < prime_lim:
         n+=1
-    print('go calculte!')
-
+    print('go calculte!', time.process_time())
+#    lt = time.process_time()
+#    for i in  range(1,num):
+#       k = f(i)
+#        if not i%100000:
+#            print(i, time.process_time()-lt)
+#            lt = time.process_time()
+#    exit(0)
     print(s(num))
     exit(0)
 

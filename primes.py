@@ -16,6 +16,7 @@ class Primes:
             else:
                 cls.known.append(candidate)
                 cls.known_set.add(candidate)
+                print(f'invite new prime {candidate}')
                 break
 
     def __getitem__(self,i):
