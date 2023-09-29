@@ -136,21 +136,53 @@ def s(n):
     def get_f(num):
         return cache.setdefault(num, f(num))
     ret = 0
-    ret1 = 0
-    ret2 = 0
+    ret1 = 0  # on main diagonal
+    ret2 = 0  # other
+    ret3 = 0 # need to multiple by dd1
     for i in range(1,n+1):
         d1 = f(i)
         dd1 = multi_d(d1)
         ret1 += multi_d(dict_summ(d1,d1))
+        ret3 = 0
         for j in range(1,i ):
             d2 = f(j)
-            if primes.nod(i,j) == 1:
-                ret2 += (dd1*multi_d(d2))
+            nod = primes.nod(i,j)
+            if nod == 1:
+                ret3 += multi_d(d2)#(dd1*multi_d(d2))
             else:
+                #ret2 += multi_d(f(i//nod))*multi_d(f(j//nod))*multi_d(f(nod))
                 ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
-        if not i%1000:
-            print(i,time.process_time(), ret)
+        ret2 += ret3*dd1
+        #if not i%1000:
+            #print(i,time.process_time(), ret1 + (ret2 << 1), ret1)
+        print(i,time.process_time(), ret1 + (ret2 << 1), ret1, ret2)
+    print(ret1,ret2)
     return ret1 + (ret2 << 1)
+
+def s1(n):
+    ret = 0
+    ret1 = 0
+    ret3 = 0
+    last_dd1 = 0
+    for i in range(1,n+1):
+        d1 = f(i)
+        dd1 = multi_d(d1)
+        ret1 += multi_d(dict_summ(d1,d1))
+        ret3 <<=1
+        ret3 += dd1 * last_dd1
+        last_dd1 = dd1
+        print(ret1, ret3)
+        #for j in range(1,i):
+        #    d2 = f(j)
+        #    ret3 = (ret3 << 1) + multi_d(d2)
+    return ret1 + (ret3<<1) #((ret3-dd1) << 1)
+
+def s2(n):
+    n = n*n
+    ret = 0
+    for i in range(2,n):
+        ret = (ret<<1) + multi_d(f(i))
+    return ret
 
 def factor_exam(num,d):
     ret = 1
@@ -176,6 +208,7 @@ if __name__ == '__main__':
 #            lt = time.process_time()
 #    exit(0)
     print(s(num))
+    print(s1(num))
     exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
