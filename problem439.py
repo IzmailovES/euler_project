@@ -119,16 +119,21 @@ def multi_d(dct):
     # all items in dct is prime:power
     ret = 1
     for x,y in dct.items():
-        #r1 = 0
-        #for k in range(y+1):
-        #    r1 += x**k
-        #ret *=r1
-
         try:
             ret *= (x**(y+1) -1)//(x - 1)
         except ZeroDivisionError:
             pass
     return ret
+
+def multiple_delimers(d1,d2):
+    #d1_new = dict(d1)
+    #d2_new = dict(d2)
+    d3 = dict()
+    ks = d1.keys()
+    for i in ks:
+        if i in d2:
+            d3[i] = d2[i] + d1[i]
+    return multi_d(d3) * multi_d({x:y for x,y in d1.items() if x not in d3}) * multi_d({x:y for x,y in d2.items() if x not in d3})
 
 
 def s(n):
@@ -155,9 +160,27 @@ def s(n):
         ret2 += ret3*dd1
         #if not i%1000:
             #print(i,time.process_time(), ret1 + (ret2 << 1), ret1)
-        print(i,time.process_time(), ret1 + (ret2 << 1), ret1, ret2)
-    print(ret1,ret2)
+        #print(i,time.process_time(), ret1 + (ret2 << 1), ret1, ret2)
+    #print(ret1,ret2)
     return ret1 + (ret2 << 1)
+
+def s3(n):
+    ret1 = 0
+    ret2 = 0
+    for i in range(1,n+1):
+        d1 = f(i)
+        dd1 = multi_d(d1)
+        ret1 += multi_d(dict_summ(d1,d1))
+        ret3 = 0
+        for j in range(1,i):
+            d2 = f(j)
+            nod = primes.nod(i, j)
+            if nod == 1:
+                ret3 += multi_d(d2)
+            else:
+                ret2 += multiple_delimers(d1, d2)
+        ret2 += ret3*dd1
+    return ret1 + (ret2<<1)
 
 def s1(n):
     ret = 0
@@ -177,12 +200,6 @@ def s1(n):
         #    ret3 = (ret3 << 1) + multi_d(d2)
     return ret1 + (ret3<<1) #((ret3-dd1) << 1)
 
-def s2(n):
-    n = n*n
-    ret = 0
-    for i in range(2,n):
-        ret = (ret<<1) + multi_d(f(i))
-    return ret
 
 def factor_exam(num,d):
     ret = 1
@@ -207,8 +224,10 @@ if __name__ == '__main__':
 #            print(i, time.process_time()-lt)
 #            lt = time.process_time()
 #    exit(0)
-    print(s(num))
-    print(s1(num))
+    strt = time.process_time()
+    print(s3(num), time.process_time() - strt)
+    strt = time.process_time()
+    print(s(num), time.process_time() - strt)
     exit(0)
 
 #print (dict_summ({1:2, 3:4}, {0:5, 1:3, 7:8}))
