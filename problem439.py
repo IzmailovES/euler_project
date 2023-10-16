@@ -76,17 +76,35 @@ def multi_d(dct):
     return ret
 
 def multiple_delimers(d1,d2):
-    #d1_new = dict(d1)
-    #d2_new = dict(d2)
     d3 = dict()
     ks = d1.keys()
     for i in ks:
         if i in d2:
             d3[i] = d2[i] + d1[i]
-    #return multi_d(d3) * multi_d({x:y for x,y in d1.items() if x not in d3}) * multi_d({x:y for x,y in d2.items() if x not in d3})
     return multi_d(d3) * multi_d({x:y for x,y in (d1|d2).items() if x not in d3})
-    #return multi_d(d3) * multi_d( dict(filter(lambda x: x[0] not in d3, (d1|d2).items() ))) #  {x:y for x,y in (d1|d2).items() if x not in d3})
 
+def balance_d(d1,d2):
+    ret1 = dict(d1)
+    ret2 = dict()
+    for x,y in d2.items():
+        if x in d1:
+            ret2[x] = d1[x] + d2[x]
+            del ret1[x]
+    return ret1,ret2
+
+def balance_i(i,j):
+    print(i,j)
+    while True:
+        nod = primes.nod(i,j)
+        print(nod)
+        if nod == 1:
+            break
+        i //= nod
+        j *= nod
+    return i,j
+
+print(balance_i(3*3*3*5*7*11*11,5*5*3*13))
+exit(0)
 
 def s(n):
     cache = dict()
