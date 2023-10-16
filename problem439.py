@@ -56,13 +56,13 @@ def factorize_rec(max_cachesize = 50**2):
             return dict()
         s_num = num
         # если число простое - возвращаем
-        if num in primes.Primes.get_set():
+        if num <= primes.Primes.known[-1] and num in primes.Primes.get_set():
             return {num:1}
       #  else:
        #     print(f'known set miss: {num} {primes.Primes.get_set()}')
 
         # если находим в кеше - возвращаем
-        if num in cache:
+        if num <= max_cachesize and num in cache:
    #         print('cache success')
             return cache[num]
    #     nonlocal i
@@ -133,7 +133,9 @@ def multiple_delimers(d1,d2):
     for i in ks:
         if i in d2:
             d3[i] = d2[i] + d1[i]
-    return multi_d(d3) * multi_d({x:y for x,y in d1.items() if x not in d3}) * multi_d({x:y for x,y in d2.items() if x not in d3})
+    #return multi_d(d3) * multi_d({x:y for x,y in d1.items() if x not in d3}) * multi_d({x:y for x,y in d2.items() if x not in d3})
+    return multi_d(d3) * multi_d({x:y for x,y in (d1|d2).items() if x not in d3})
+    #return multi_d(d3) * multi_d( dict(filter(lambda x: x[0] not in d3, (d1|d2).items() ))) #  {x:y for x,y in (d1|d2).items() if x not in d3})
 
 
 def s(n):
