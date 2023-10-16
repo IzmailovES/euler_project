@@ -123,6 +123,26 @@ def balance_i(i,j):
 #print(balance_d_({3:4, 5:2,7:1, 11:1, 13:2},{3:2, 5:4,7:1, 17:1}))
 #exit(0)
 
+def mnozitel(d1,d2):
+    ret = dict()
+    tmp = dict(d2)
+    for x,y in d2.items():
+        if x in d1:
+            ret[x] = y
+            del tmp[x]
+    # teper formiruem coefficient
+    k = 1
+    for x,y in ret.items():
+        try:
+            k *= (x**(y+1+d1[x]) - x**(d1[x]+1))//(x-1)
+        except ZeroDivisionError:
+            pass
+    d2 = tmp
+    
+    return k
+
+
+
 def s(n):
     cache = dict()
     def get_f(num):
@@ -144,6 +164,35 @@ def s(n):
             else:
                 #ret2 += multi_d(f(i//nod))*multi_d(f(j//nod))*multi_d(f(nod))
                 ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
+                #!!! ret3 += multi_d(d2_reduced) * mnozitel --  iz peresecheniua d1,d2
+        ret2 += ret3*dd1
+        #if not i%1000:
+            #print(i,time.process_time(), ret1 + (ret2 << 1), ret1)
+        #print(i,time.process_time(), ret1 + (ret2 << 1), ret1, ret2)
+    #print(ret1,ret2)
+    return ret1 + (ret2 << 1)
+
+def s4(n):
+    cache = dict()
+    def get_f(num):
+        return cache.setdefault(num, f(num))
+    ret = 0
+    ret1 = 0  # on main diagonal
+    ret2 = 0  # other
+    ret3 = 0 # need to multiple by dd1
+    for i in range(1,n+1):
+        d1 = f(i)
+        dd1 = multi_d(d1)
+        ret1 += multi_d(dict_summ(d1,d1))
+        ret3 = 0
+        for j in range(1,i ):
+            d2 = f(j)
+            #nod = primes.nod(i,j)
+            ret3 += mnozitel(d1,d2) + multi_d(d2)#(dd1*multi_d(d2))
+            #else:
+                #ret2 += multi_d(f(i//nod))*multi_d(f(j//nod))*multi_d(f(nod))
+            #    ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
+                #!!! ret3 += multi_d(d2_reduced) * mnozitel --  iz peresecheniua d1,d2
         ret2 += ret3*dd1
         #if not i%1000:
             #print(i,time.process_time(), ret1 + (ret2 << 1), ret1)
@@ -199,9 +248,9 @@ if __name__ == '__main__':
     #for i in range(num):
     #    print(i, f(i))
     strt = time.process_time()
-    #print(s(num), time.process_time() - strt)
+    print(s(num), time.process_time() - strt)
     strt = time.process_time()
-    print(s3(num), time.process_time() - strt)
+    print(s4(num), time.process_time() - strt)
     exit(0)
 
 
