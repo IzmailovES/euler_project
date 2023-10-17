@@ -18,7 +18,7 @@ def factorize_rec(max_cachesize = 500**2):
         if num < max_cachesize:
             cache[num] = delimers
            # print(num,cache, sep = '\t')
-
+    time_summ = 0
     def inner(num, pp = 0):
         if not num:
             return dict()
@@ -70,11 +70,8 @@ def d(num):
 def multi_d(dct):
     # all items in dct is prime:power
     ret = 1
-    for x,y in dct.items():
-        try:
-            ret *= (x**(y+1) -1)//(x - 1)
-        except ZeroDivisionError:
-            pass
+    for x in dct:
+        ret *= (x**(dct[x]+1) -1)//(x - 1)
     return ret
 
 def multiple_delimers(d1,d2, pr = False):
@@ -125,11 +122,9 @@ def balance_i(i,j):
 
 def mnozitel(d1,d2):
     ret = dict()
-    tmp = dict(d2)
-    for x,y in d2.items():
+    for x in list(d2):
         if x in d1:
-            ret[x] = y
-            del tmp[x]
+            ret[x] = d2.pop(x)
     # teper formiruem coefficient
     k = 1
     for x,y in ret.items():
@@ -137,10 +132,28 @@ def mnozitel(d1,d2):
             k *= (x**(y+1+d1[x]) - x**(d1[x]+1))//(x-1)
         except ZeroDivisionError:
             pass
-    d2 = tmp
-    
     return k
 
+def s_generator(n):
+    ret = 0
+    ret1 = 0  # on main diagonal
+    ret2 = 0  # other
+    ret3 = 0 # need to multiple by dd1
+    for i in range(1,n+1):
+        d1 = f(i)
+        dd1 = multi_d(d1)
+        ret1 += multi_d(dict_summ(d1,d1))
+        ret3 = 0
+        ret2 += sum( ( ((multi_d(f(j)) * dd1) if (primes.nod(i,j)==1) else (multi_d(dict_summ(d1, f(j))))) for j in range(1, i) ))
+        #ret2 += ret3
+        #for j in range(1, i):
+        #    nod = primes.nod(i,j)
+        #    if nod == 1:
+        #        ret3 += multi_d(f(j))*dd1#(dd1*multi_d(d2))
+        #    else:
+        #        ret2 += (multi_d(dict_summ(d1,f(j))))
+        #ret2 += ret3#*dd1
+    return ret1 + (ret2 << 1)
 
 
 def s(n):
@@ -162,7 +175,6 @@ def s(n):
             if nod == 1:
                 ret3 += multi_d(d2)#(dd1*multi_d(d2))
             else:
-                #ret2 += multi_d(f(i//nod))*multi_d(f(j//nod))*multi_d(f(nod))
                 ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
                 #!!! ret3 += multi_d(d2_reduced) * mnozitel --  iz peresecheniua d1,d2
         ret2 += ret3*dd1
@@ -173,9 +185,6 @@ def s(n):
     return ret1 + (ret2 << 1)
 
 def s4(n):
-    cache = dict()
-    def get_f(num):
-        return cache.setdefault(num, f(num))
     ret = 0
     ret1 = 0  # on main diagonal
     ret2 = 0  # other
@@ -185,19 +194,11 @@ def s4(n):
         dd1 = multi_d(d1)
         ret1 += multi_d(dict_summ(d1,d1))
         ret3 = 0
+        ret2 = 0
         for j in range(1,i ):
             d2 = f(j)
-            #nod = primes.nod(i,j)
             ret3 += mnozitel(d1,d2) + multi_d(d2)#(dd1*multi_d(d2))
-            #else:
-                #ret2 += multi_d(f(i//nod))*multi_d(f(j//nod))*multi_d(f(nod))
-            #    ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
-                #!!! ret3 += multi_d(d2_reduced) * mnozitel --  iz peresecheniua d1,d2
         ret2 += ret3*dd1
-        #if not i%1000:
-            #print(i,time.process_time(), ret1 + (ret2 << 1), ret1)
-        #print(i,time.process_time(), ret1 + (ret2 << 1), ret1, ret2)
-    #print(ret1,ret2)
     return ret1 + (ret2 << 1)
 
 def s3(n):
@@ -248,9 +249,9 @@ if __name__ == '__main__':
     #for i in range(num):
     #    print(i, f(i))
     strt = time.process_time()
-    print(s(num), time.process_time() - strt)
+    print(s_generator(num), time.process_time() - strt)
     strt = time.process_time()
-    print(s4(num), time.process_time() - strt)
+    print(s(num), time.process_time() - strt)
     exit(0)
 
 
