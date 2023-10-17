@@ -7,6 +7,14 @@ import sys
 import functools
 
 def dict_summ(d1,d2):
+    ret = {**d1, **d2}
+    #print(d1,d2,ret)
+    for x in d1:
+        if x in d2:
+            ret[x] += d1[x]
+    #print(ret)
+    return ret
+
     ret = d1.copy()
     for x in d2:
         ret[x] = d1.get(x,0) + d2[x] 
@@ -59,8 +67,8 @@ f = factorize_rec()
 
 
 def d(num):
-    if num == 1:
-        return 1
+    #if num == 1:
+    #    return 1
     ret = 1
     delimers = f(num)
     for x,y in delimers.items():
@@ -145,8 +153,8 @@ def s_generator(n):
         d1 = f(i)
         dd1 = multi_d(d1)
         ret1 += multi_d(dict_summ(d1,d1))
-        #ret2 += sum( ( ((multi_d(f(j)) * dd1) if (primes.nod(i,j)==1) else (multi_d(dict_summ(d1, f(j))))) for j in range(1, i) ))
-        ret2 += sum( (multi_d(dict_summ(d1, f(j))) for j in range(1, i) ))
+        ret2 += sum( ( ((multi_d(f(j)) * dd1) if (math.gcd(i,j)==1) else (multi_d(dict_summ(d1, f(j))))) for j in range(1, i) ))
+        #ret2 += sum( (multi_d(dict_summ(d1, f(j))) for j in range(1, i) ))
     return ret1 + (ret2 << 1)
 
 
@@ -165,7 +173,7 @@ def s(n):
         ret3 = 0
         for j in range(1,i ):
             d2 = f(j)
-            nod = primes.nod(i,j)
+            nod = math.gcd(i,j)
             if nod == 1:
                 ret3 += multi_d(d2)#(dd1*multi_d(d2))
             else:
