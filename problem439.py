@@ -143,16 +143,7 @@ def s_generator(n):
         d1 = f(i)
         dd1 = multi_d(d1)
         ret1 += multi_d(dict_summ(d1,d1))
-        ret3 = 0
         ret2 += sum( ( ((multi_d(f(j)) * dd1) if (primes.nod(i,j)==1) else (multi_d(dict_summ(d1, f(j))))) for j in range(1, i) ))
-        #ret2 += ret3
-        #for j in range(1, i):
-        #    nod = primes.nod(i,j)
-        #    if nod == 1:
-        #        ret3 += multi_d(f(j))*dd1#(dd1*multi_d(d2))
-        #    else:
-        #        ret2 += (multi_d(dict_summ(d1,f(j))))
-        #ret2 += ret3#*dd1
     return ret1 + (ret2 << 1)
 
 
@@ -251,7 +242,7 @@ if __name__ == '__main__':
     strt = time.process_time()
     print(s_generator(num), time.process_time() - strt)
     strt = time.process_time()
-    print(s(num), time.process_time() - strt)
+    #print(s(num), time.process_time() - strt)
     exit(0)
 
 
