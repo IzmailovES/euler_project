@@ -4,11 +4,12 @@ import primes
 import math
 import time
 import sys
+import functools
 
 def dict_summ(d1,d2):
     ret = d1.copy()
-    for x,y in d2.items():
-        ret[x] = d1.get(x,0) + y
+    for x in d2:
+        ret[x] = d1.get(x,0) + d2[x] 
     return ret
 
 def factorize_rec(max_cachesize = 500**2):
@@ -69,6 +70,7 @@ def d(num):
 
 def multi_d(dct):
     # all items in dct is prime:power
+    #return functools.reduce(lambda x,y: x*y, ( (x**(dct[x] + 1) -1)//(x-1) for x in dct ), 1)
     ret = 1
     for x in dct:
         ret *= (x**(dct[x]+1) -1)//(x - 1)
@@ -143,7 +145,8 @@ def s_generator(n):
         d1 = f(i)
         dd1 = multi_d(d1)
         ret1 += multi_d(dict_summ(d1,d1))
-        ret2 += sum( ( ((multi_d(f(j)) * dd1) if (primes.nod(i,j)==1) else (multi_d(dict_summ(d1, f(j))))) for j in range(1, i) ))
+        #ret2 += sum( ( ((multi_d(f(j)) * dd1) if (primes.nod(i,j)==1) else (multi_d(dict_summ(d1, f(j))))) for j in range(1, i) ))
+        ret2 += sum( (multi_d(dict_summ(d1, f(j))) for j in range(1, i) ))
     return ret1 + (ret2 << 1)
 
 
@@ -242,7 +245,7 @@ if __name__ == '__main__':
     strt = time.process_time()
     print(s_generator(num), time.process_time() - strt)
     strt = time.process_time()
-    #print(s(num), time.process_time() - strt)
+    print(s(num), time.process_time() - strt)
     exit(0)
 
 
