@@ -118,7 +118,7 @@ def balance_d_(d1,d2):
 def balance_i(i,j):
     print(i,j)
     while True:
-        nod = primes.nod(i,j)
+        nod = math.gcd(i,j)
         print(nod)
         if nod == 1:
             break
@@ -216,7 +216,7 @@ def s3(n):
         for j in range(1,i):
             d2 = f(j)
             #print(j,d2)
-            nod = primes.nod(i, j)
+            nod = math.gcd(i, j)
             if nod == 1:
                 ret3 += multi_d(d2)
             else:
