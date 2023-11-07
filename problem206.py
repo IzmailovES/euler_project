@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
+import math, itertools
 
-def verify(num):
-    s = str(num)
-    if len(s) != 19:
-        return False
-    for i in range(10):
-        if int(s[i*2]) != i+1:
-            return False
-        if s[-1] != '0':
-            return False
-    return True
+def in_mask(num):
+    q = 0
+    p = 0
+    while num:
+        q += (num%10)*(10**p)
+        num //=100
+        p += 1
+    return q == 123456789
 
-for i in range(10**9,10**10):
-    if verify(i):
+i = 101010101
+while True:
+    if in_mask(i**2):
         print(i)
+        break
+    i += 2
+
 
