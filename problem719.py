@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-
+import math
 def get_splits(s):
-    if len(s) == 1:
+    ls = len(s)
+    if ls == 1:
         return [[s]]
-    if len(s) == 2:
+    if ls == 2:
         return [[s], [s[0], s[1]]]
     ret = []
-    for i in range(1,len(s)):
-        ret +=  [[s[:i]] + x for x in get_splits(s[i: (len(s))])]
+    for i in range(1,ls):
+        ret +=  [[s[:i]] + x for x in get_splits(s[i: (len(s))])] + [[s[:i], s[i:]]]
     return ret
 
 def get_split_pattern(c):
@@ -16,7 +17,9 @@ def get_split_pattern(c):
     #    s += str(1)
     #s = ''.join(['1' for _ in range(c)])
     s = '1'*c
-    return list(filter( lambda x: max([len(y) for y in x] ) <= (c//2+1) ,get_splits(s)))
+    ret =  list(filter( lambda x: (math.ceil(c/2) - 1) <= max([len(y) for y in x] ) <= math.ceil(c/2) ,get_splits(s)))
+    #return ([ [len(y) for y in x] for x in ret ] + [ [c//2,  c-c//2], [c-c//2, c//2]]) if c > 3 else 
+    return ([ [len(y) for y in x] for x in ret ] )
 
 def is_s_num(num,num2, patterns):
     s_num = str(num2)
@@ -24,13 +27,13 @@ def is_s_num(num,num2, patterns):
         acc = 0
         p = 0
         for pt in l:
-            ss = s_num[p:p+len(pt)]
-            #if len(ss) > len(str(num)):
-            #    break
-            #if len(ss) > 1 and ss[0] == '0':
-            #    break
-            acc += int(ss)
-            p += len(pt)
+            ss = s_num[p:p+pt]
+            try:
+                acc += int(ss)
+            except ValueError:
+                print(l,num)
+                exit(1)
+            p += pt
         else:
             if acc == num:
                 print(num, num2, 'pattern:', l, len(l))
@@ -38,33 +41,20 @@ def is_s_num(num,num2, patterns):
     return 0
 
 
+n = 10**6
 d_patterns = dict()
-for i in range(1,14):
+for i in range(1,len(str(n**2))+ 1):
     d_patterns[i] = get_split_pattern(i)
 
+for d in d_patterns:
+    print(d, d_patterns[d])
 
-#for d in d_patterns:
-#    print()
-#    print(f'{d}: {d_patterns[d]}')
-#exit(0)
-
-#print(is_s_num(99, d_patterns))
-
-#for i in range(2,1000):
-#    if is_s_num(i):
-#        print(i, i**2)
-
-n = 10**6 + 1
 acc = 0
 i = 2
-while i < n:
+while i <= n:
     ii = i**2
     acc += is_s_num(i,ii,d_patterns)
-    #if is_s_num(i,ii,d_patterns):
-    #    acc += ii
-    #    print(acc,i)
     i += 1
-
 
 print(acc)
 
