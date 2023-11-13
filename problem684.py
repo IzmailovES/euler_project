@@ -17,9 +17,12 @@ def S(num):
     k = num//9
     ost = num%9
     for i in range(k):
-        add =  (9*(ost + 9*(k-i-1) + 5)) * 10**i
+        #add =  (9*(ost + 9*(k-i-1) + 5)) * 10**i
+        add =  (num - 9*i -4 ) * 10**i
         ret += add
       #  print(add)
+    ret *=9
+    print('>>', k, ost, sum(range(ost+1)))
     return ret + sum(range(ost+1))*10**(k)
 
 
@@ -30,7 +33,7 @@ def d_sum(num):
         ret += num%10
         num //=10
     return ret
-for i in range(10000):
+for i in range(100):
     r = S(i)
     print(i, r, len(str(r)))
 print()
