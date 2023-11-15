@@ -22,10 +22,16 @@ def S(num):
         ret += add
       #  print(add)
     ret *=9
-    print('>>', k, ost, sum(range(ost+1)))
+    print('>>',num, k, ost, sum(range(ost+1)), ret, end = ' ')
     return ret + sum(range(ost+1))*10**(k)
 
-
+def S1(num, mod = None):
+    k = num//9
+    o = num%9
+    ret =  pow((o + 6 + sum(range(o+1)))*  pow(10,k, mod), 1, mod) - pow((num+6), 1, mod)
+    if ret < 0:
+        ret += mod
+    return ret
 
 def d_sum(num):
     ret = 0
@@ -33,10 +39,20 @@ def d_sum(num):
         ret += num%10
         num //=10
     return ret
-for i in range(100):
-    r = S(i)
-    print(i, r, len(str(r)))
-print()
-exit()
-print(S(13), S(21), S(34))
-print(S(34) - S(33))
+#for i in range(100):
+#    r = S(i)
+#    print( r, len(str(r)))
+#print()
+#exit()
+#print(S(13), S(21), S(34))
+#print(S(34) - S(33))
+j = 1
+acc = 0
+print(len(fib(90,0,1)))
+for i in fib(90,0,1)[1:]:
+    j += 1
+    f = S1(i,10**9+7)
+    acc += f
+    print(j, i, "\n", f)
+print(acc%(10**9+7))
+print(S1(20))
