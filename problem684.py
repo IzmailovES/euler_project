@@ -12,6 +12,12 @@ def s(num):
     first = num%9
     return int(str(first)+'9'*nines)
 tail = 9**2 - sum(range(9))
+def Ss(num):
+    acc = 0
+    for n in range(1,num+1):
+        acc+=s(n)
+    return acc
+
 def S(num):
     ret = 0
     k = num//9
@@ -22,15 +28,15 @@ def S(num):
         ret += add
       #  print(add)
     ret *=9
-    print('>>',num, k, ost, sum(range(ost+1)), ret, end = ' ')
+    #print('>>',num, k, ost, sum(range(ost+1)), ret, end = ' ')
     return ret + sum(range(ost+1))*10**(k)
 
 def S1(num, mod = None):
     k = num//9
     o = num%9
-    ret =  pow((o + 6 + sum(range(o+1)))*  pow(10,k, mod), 1, mod) - pow((num+6), 1, mod)
-    if ret < 0:
-        ret += mod
+    ret =  pow((o + 6 + sum(range(o+1)))*  pow(10,k, mod) - (num+6), 1, mod)
+    #if ret < 0:
+    #    ret += mod
     return ret
 
 def d_sum(num):
@@ -39,20 +45,23 @@ def d_sum(num):
         ret += num%10
         num //=10
     return ret
-#for i in range(100):
-#    r = S(i)
-#    print( r, len(str(r)))
-#print()
+print(S1(1779979416004714189, 10**9+7))
+for i in range(1000):
+    #r = S(i)
+    f =  Ss(i)%29 == S(i)%29 == S1(i,29)
+    if not f:
+        print(i)
+print()
 #exit()
 #print(S(13), S(21), S(34))
 #print(S(34) - S(33))
 j = 1
 acc = 0
 print(len(fib(90,0,1)))
-for i in fib(90,0,1)[1:]:
+for i in fib(91,0,1)[2:]:
     j += 1
     f = S1(i,10**9+7)
     acc += f
-    print(j, i, "\n", f)
+    print(j, i,  f, acc)
 print(acc%(10**9+7))
 print(S1(20))
