@@ -28,14 +28,6 @@ def validate(n,fib):
     return False
 fib = get_f(121)
 i = 3
-#print(list(map(lambda x: x%20, fib))[:])
-#for i in range(3,100000):
-#    if pi(i)[0] == 120:
-#        print(i)
-
-#print('!!!!')
-#print(*map(lambda x : x%66, pi(66)[1]))
-#exit()
 
 acc = 0
 while i < 10**9:
@@ -45,20 +37,4 @@ while i < 10**9:
     i += 1
 print(acc)
 exit(0)
-print(pi(70))
-print(pi(140))
-print(pi(280))
-print(pi(308))
-print()
-#exit(0)
-i = 3
-n = 0
-while n < 10**9:
-    k = pi(i)
-    if k == 120:
-        n += 1
-        print(i)
-        #break
-    i += 1
-print(i)
 
