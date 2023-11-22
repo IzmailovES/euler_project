@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import sympy
-
-n = 800800**800800
-#n = 800**800
+import math
+#n = 800800**800800
+n = 800**800
 #n = 800
 def gp(p1,p2):
     return p1**p2*p2**p1
@@ -22,6 +22,54 @@ def test(pp, lim, n):
     if not (mif or maf):
         return 'more'
     return 'here'
+
+def fs_log(fp,n):
+    logn = math.log(n,fp)
+    high = int(logn)
+    low = 0
+    d = low
+    while(high - low) > 1:
+        p = (high+low)>>1
+       
+        k = p + fp*math.log(p,fp) - logn
+        if k > 0:
+            high = p
+        elif k < 0:
+            low = p
+        else:
+            print('break exit')
+            break
+        print(high,low,p)
+    return sympy.prevprime(p+1)
+k = sympy.nextprime(1)
+acc = dict()
+facc = []
+f = 3
+i = 1
+while (k) < f:
+#for _ in range(30):
+    f = fs_log(k,n)
+    acc[f] = (k,i)
+    #acc.append((i,k,f))
+    print(i,k,f, test(k,n,f ))
+    k = sympy.nextprime(k)
+    i += 1
+print(len(acc))
+a = sum([ x[1] for x in acc.values()])
+print(i)
+a -= 1
+a *=2
+print('a is', a)
+i = 83
+print(acc)
+print('i is',i)
+b = math.factorial(i)//(math.factorial(i-2))
+print(b)
+print(a)
+print(a+b)
+
+exit(0)
+
 
 
 def find_secondprime(n):
