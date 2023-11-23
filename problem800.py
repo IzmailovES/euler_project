@@ -39,34 +39,52 @@ def fs_log(fp,n):
         else:
             print('break exit')
             break
-        print(high,low,p)
+        #print(high,low,p)
     return sympy.prevprime(p+1)
+## найти p, при котором q - предыдуюее - ассиметричные пары
+# из последовательнсти p и меньше все пары будут меньше большого числа
+# ищем ассиметричные пары:
 k = sympy.nextprime(1)
 acc = dict()
-facc = []
 f = 3
-i = 1
-while (k) < f:
-#for _ in range(30):
+while k < f:
     f = fs_log(k,n)
-    acc[f] = (k,i)
-    #acc.append((i,k,f))
-    print(i,k,f, test(k,n,f ))
+    print(k,f)
+    if k != f:
+        acc[f] = k
     k = sympy.nextprime(k)
-    i += 1
-print(len(acc))
-a = sum([ x[1] for x in acc.values()])
-print(i)
-a -= 1
-a *=2
-print('a is', a)
-i = 83
+print(f)
 print(acc)
-print('i is',i)
-b = math.factorial(i)//(math.factorial(i-2))
+lacc = sorted([x for x in acc.items()], reverse = True)
+print(lacc)
+ret = 0
+for i in range(len(lacc)-1):
+    ret += (sympy.primepi(lacc[i][0]) - sympy.primepi(lacc[i+1][0]))*sympy.primepi(lacc[i][1])
+print(ret)
+z = sympy.primepi(f)
+print(z)
+b = math.factorial(z)//(math.factorial(z-2)*2)
 print(b)
-print(a)
-print(a+b)
+print(ret + b)
+exit(0)
+k = sympy.nextprime(1)
+np = nodeprimes[0]
+ii = 1
+while True:
+    if k > np:
+        break
+    if k in acc:
+        countprimes.append((k,ii))
+        print(k,ii)
+    k = sympy.nextprime(k)
+    ii += 1
+ret = 0
+for i in range(len(countprimes)-1):
+    ret += (countprimes[-1 - i][1] - countprimes[-2 - i][1]) * acc[countprimes[-1 -i][0]][1]
+print(ret)
+ret += math.factorial(85)//(math.factorial(85-2) * 2)
+print(ret)
+print('done')
 
 exit(0)
 
