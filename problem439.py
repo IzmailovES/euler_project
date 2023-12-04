@@ -5,8 +5,10 @@ import math
 import time
 import sys
 import functools
+import sympy
 
 def dict_summ(d1,d2):
+    #return {x:( d1.get(x,0) + d2.get(x,0)) for x in {*d1, *d2}}
     ret = {**d1, **d2}
     #print(d1,d2,ret)
     for x in d1:
@@ -29,13 +31,13 @@ def factorize_rec(max_cachesize = 500**2):
            # print(num,cache, sep = '\t')
     time_summ = 0
     def inner(num, pp = 0):
-        if not num:
-            return dict()
-        if num == 1:
+        #if not num:
+        #    return dict()
+        if num == 1 or not num:
             return dict()
         s_num = num
         # если число простое - возвращаем
-        if num <= primes.Primes.known[-1] and num in primes.Primes.get_set():
+        if sympy.ntheory.isprime(num): #num <= primes.Primes.known[-1] and num in primes.Primes.get_set():
             return {num:1}
         # если находим в кеше - возвращаем
         if num <= max_cachesize and num in cache:
@@ -45,23 +47,37 @@ def factorize_rec(max_cachesize = 500**2):
         lim = int(math.sqrt(num)) + 1
         while num != 1:
             #prime = primes.Primes()[pp]
-            prime = primes.Primes.known[pp]
+            #prime = primes.Primes.known[pp]
+            prime = sympy.nextprime(pp)
             if prime > lim and s_num == num:
                 return {s_num:1}
             if not (num % prime):
                 acc[prime] = acc.get(prime,0) + 1
                 num //= prime
             elif acc:
-                acc = dict_summ(acc, inner(num, pp + 1 ))
+                acc = dict_summ(acc, inner(num, prime ))
                 update_cache(s_num, acc)
                 return acc
             else:
-                pp += 1
+                # pp +=  1
+                pp  = sympy.nextprime(pp)
         update_cache(s_num, acc)
         return acc
     return inner
 f = factorize_rec()
-
+print(f(1000))
+def f_sy(num):
+    dels = {x:1 for x in sympy.primefactors(num)}
+    for d in dels:
+        num //= d
+    if num != 1:
+        for d in dels:
+            while not (num%d):
+                dels[d] += 1
+                num //= d
+    return dels
+#f = f_sy
+print(f(1000))
 
             #  удалось поделить - делим на делитель сколько можем - возвращаем дикт сумм делителя + вызов себя от остатка c указанием следующего простого числа
 
@@ -80,8 +96,8 @@ def multi_d(dct):
     # all items in dct is prime:power
     #return functools.reduce(lambda x,y: x*y, ( (x**(dct[x] + 1) -1)//(x-1) for x in dct ), 1)
     ret = 1
-    for x in dct:
-        ret *= (x**(dct[x]+1) -1)//(x - 1)
+    for x,y in dct.items():
+        ret *= ((x**(y+1) -1)//(x - 1)) if y != 1 else x
     return ret
 
 def multiple_delimers(d1,d2, pr = False):
@@ -171,15 +187,17 @@ def s(n):
         dd1 = multi_d(d1)
         ret1 += multi_d(dict_summ(d1,d1))
         ret3 = 0
+        flag = sympy.ntheory.isprime(i)
         for j in range(1,i ):
             d2 = f(j)
-            nod = math.gcd(i,j)
-            if nod == 1:
+            #nod = (1) if flag else (math.gcd(i,j))
+            if flag or (math.gcd(i,j) == 1):
                 ret3 += multi_d(d2)#(dd1*multi_d(d2))
             else:
                 ret2 += (multi_d(dict_summ(d1,d2))) #(0 if i == j else 1)
                 #!!! ret3 += multi_d(d2_reduced) * mnozitel --  iz peresecheniua d1,d2
         ret2 += ret3*dd1
+        print(i)
         #if not i%1000:
             #print(i,time.process_time(), ret1 + (ret2 << 1), ret1)
         #print(i,time.process_time(), ret1 + (ret2 << 1), ret1, ret2)
@@ -251,7 +269,7 @@ if __name__ == '__main__':
     #for i in range(num):
     #    print(i, f(i))
     strt = time.process_time()
-    print(s_generator(num), time.process_time() - strt)
+    #print(s_generator(num), time.process_time() - strt)
     strt = time.process_time()
     print(s(num), time.process_time() - strt)
     exit(0)
