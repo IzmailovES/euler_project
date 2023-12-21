@@ -47,6 +47,8 @@ class Cell:
         return acc
     
     def update(self):
+        if len(self._variants) == 0 and self._value == 0:
+            raise CellException(f'no value, no variants')
         if len(self._variants) == 1:
             self.value = self._variants[0]
             return True
@@ -107,7 +109,7 @@ class Grid:
     
     def what_square(self,n,m):
         return n//3,m//3
-    
+## вызывает update у всех ячеек - если в ней только один вариант - делает его значением
     def update_all(self):
         acc = 0
         for l in self.grid:
@@ -140,7 +142,7 @@ class Grid:
         return True
 
 
-
+## удаляет из ячейки варианты со значениями соседних ячеек
     def crop_variants(self):
         acc = 0
         for i in range(GD):
@@ -152,7 +154,7 @@ class Grid:
                 for e in to_delete:
                     acc += self.grid[i][j].remove_variant(e)
         return acc
-
+## если среди соседей есть одинаковые двойки вариантов, удаляет из из остальных ячеек
     def crop_by_equal_variants(self):
         ## for rows and cols and squares
         acc = 0
@@ -172,7 +174,7 @@ class Grid:
                             for c in [row[i] for i in range(GD) if (i != icc and i != isc)]:
                                 acc += c.remove_variants(to_delete)
         return acc
-
+## !!! если в ячейке есть уникаьлный среди соседей вариант - в своей оставляет только его !!! нужно проверить
     def check_unique(self):
         acc = 0
         for func in self.get_row, self.get_col, self.get_square_by_num:
