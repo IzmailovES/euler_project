@@ -82,6 +82,13 @@ class Grid:
                 print(c.value, end = ' ')
             print()
 
+    def print_variants(self):
+        for l in self.grid:
+            for c in l:
+                print(c.variants, end = '\t')
+            print()
+
+
     def get_col(self, ncol):
         ret = []
         for i in range(GD):
@@ -256,10 +263,10 @@ def main(args):
             while game.crop_by_equal_variants():
                 changes += game.update_all()
                 changes += game.crop_variants()
-            while game.check_unique(): #### ne rabotaet
+            while game.check_unique(): 
                 changes += game.update_all()
                 changes += game.crop_variants()
-                #changes += game.update_all()
+            changes += game.update_all()
             #while game.crop_variants():
             #    changes += game.update_all()
         if game.check_solution():
@@ -268,6 +275,7 @@ def main(args):
             print()
             print(name, start_zeros, game.check_zeros())
             game.print()
+            game.print_variants()
         try:
             assert game.check_integrity(), name
         except AssertionError:
