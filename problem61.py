@@ -48,31 +48,11 @@ def get_4digits(formula):
 def filter_start(num1, num2):
     return num1%100 == num2//100
 
-def delete_some(dn):
-    startnumbers = set()
-    endnumbers = set()
-    for d in dn.values():
-        for n in d:
-            startnumbers.add(n//100)
-            endnumbers.add(n%100)
-    #print(startnumbers, len(startnumbers))
-    #print(endnumbers, len(endnumbers))
-    to_delete = startnumbers ^ endnumbers
-    #print(to_delete)
-
-    for l in range(3,9):
-        for k in dn[l][:]:
-            if k//100 in to_delete or k%100 in to_delete:
-                dn[l].remove(k)
-              #  print(k)
-    return to_delete
-
 
 def delete_nofollowers(dn):
     deleted = 0
     for f in range(3,9):
         for num1 in dn[f][:]:
-            #print(num1, ':')
             fails1 = 0
             fails2 = 0
             for i in (x for x in range(3,9) if x != f):
@@ -87,17 +67,42 @@ def delete_nofollowers(dn):
                 deleted += 1
     return deleted
 
+good_seqs = list()
+def get_circle_inner(all_numbers, known_numbers, current_number, used_figures):
+    if len(used_figures) == 6:
+        good_seqs.append(known_numbers)
+        return known_numbers
+    aviaible_numbers = list(filter(lambda x: (x[1] not in used_figures) and (filter_start(current_number[0], x[0]) ), all_numbers))
+    if not aviaible_numbers:
+        return None
+    ret = []
+    for an in aviaible_numbers:
+        ret.append(get_circle_inner(all_numbers, known_numbers + [an], an, used_figures + [an[1]]))
+    return ret
+
+def get_circle(numbers):
+    nums8 = list(filter(lambda x: x[1] == 8, numbers))
+    for num in nums8:
+        ret = [num]
+        ret =  get_circle_inner(all_numbers= numbers , known_numbers = ret,current_number = num , used_figures = [8])
+    return ret
+
+
 ## generate
 dict_numbers = dict()
 for i,f in enumerate(formuls, start = 3):
-    #print(get_first_4digit(f), end = ' ')
     dict_numbers[i] = get_4digits(f)
     dict_numbers[i] = list(filter(lambda x: (x//10)%10, dict_numbers[i]))
-    #print(dict_numbers[i], len(dict_numbers[i]))
-    #print()
 while delete_nofollowers(dict_numbers):
     pass
-for i in dict_numbers:
-    print(i, dict_numbers[i], len(dict_numbers[i]))
+#for i in dict_numbers:
+#    print(i, dict_numbers[i], len(dict_numbers[i]))
+numbers = []
+for f in dict_numbers:
+    for i in dict_numbers[f]:
+        numbers.append((i,f))
 
-
+#print(numbers, len(numbers))
+get_circle(numbers)
+good_seq = (list(filter(lambda x: filter_start(x[-1][0], x[0][0]), good_seqs)))[0]
+print(sum(x[0] for x in good_seq))
