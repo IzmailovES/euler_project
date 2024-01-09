@@ -68,6 +68,25 @@ def delete_some(dn):
     return to_delete
 
 
+def delete_nofollowers(dn):
+    deleted = 0
+    for f in range(3,9):
+        for num1 in dn[f][:]:
+            #print(num1, ':')
+            fails1 = 0
+            fails2 = 0
+            for i in (x for x in range(3,9) if x != f):
+                ret = list(filter(lambda x: filter_start(num1,x), dict_numbers[i]))
+                ret2 = list(filter(lambda x: filter_start(x,num1), dict_numbers[i]))
+                if not ret:
+                    fails1 += 1
+                if not ret2:
+                    fails2 += 1
+            if fails1 == 5 or fails2 == 5:
+                dn[f].remove(num1)
+                deleted += 1
+    return deleted
+
 ## generate
 dict_numbers = dict()
 for i,f in enumerate(formuls, start = 3):
@@ -76,7 +95,9 @@ for i,f in enumerate(formuls, start = 3):
     dict_numbers[i] = list(filter(lambda x: (x//10)%10, dict_numbers[i]))
     #print(dict_numbers[i], len(dict_numbers[i]))
     #print()
-while delete_some(dict_numbers):
+while delete_nofollowers(dict_numbers):
     pass
 for i in dict_numbers:
     print(i, dict_numbers[i], len(dict_numbers[i]))
+
+
